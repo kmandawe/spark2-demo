@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from pyspark import SQLContext
 from pyspark.shell import spark
 from pyspark.sql.types import Row
 
@@ -58,3 +59,48 @@ complex_data = sc.parallelize([Row(col_list=[1, 2, 3], col_dict={"k1": 0}, col_r
 
 complex_data_df = complex_data.toDF()
 complex_data_df.show()
+
+sqlContext = SQLContext(sc)
+print(sqlContext)
+
+df = sqlContext.range(5)
+print(df)
+df.show()
+print(df.count())
+
+data = [("Alice", 50), ("Bob", 80), ("Charlee", 75)]
+sqlContext.createDataFrame(data).show()
+
+sqlContext.createDataFrame(data, ['Name', 'Score']).show()
+
+complex_data = [
+    (1.0, 10, "Alice", True, [1, 2, 3], {"k1": 0}, Row(a=1, b=2, c=3), datetime(2014, 8, 1, 14, 1, 5)),
+    (2.0, 20, "Bob", True, [1, 2, 3, 4, 5], {"k1": 0, "k2": 1}, Row(a=1, b=2, c=3), datetime(2014, 8, 1, 14, 1, 5)),
+    (3.0, 30, "Charlee", False, [1, 2, 3, 4, 5, 6], {"k1": 0, "k2": 1, "k3": 2}, Row(a=1, b=2, c=3),
+     datetime(2014, 8, 1, 14, 1, 5)),
+]
+
+sqlContext.createDataFrame(complex_data).show()
+
+complex_data_df = sqlContext.createDataFrame(complex_data,
+                                             ['col_integer',
+                                              'col_float',
+                                              'col_string',
+                                              'col_boolean',
+                                              'col_list',
+                                              'col_dictionary',
+                                              'col_row',
+                                              'col_date_time']
+                                             )
+complex_data_df.show()
+
+data = sc.parallelize([Row(1, "Alice", 50),
+                       Row(2, "Bob", 80),
+                       Row(3, "Charlee", 75)])
+
+column_names = Row('id', 'name', 'score')
+students = data.map(lambda r: column_names(*r))
+print(students)
+print(students.collect())
+students_df = sqlContext.createDataFrame(students)
+students_df.show()
