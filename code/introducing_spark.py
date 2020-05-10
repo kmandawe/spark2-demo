@@ -136,4 +136,13 @@ complex_data_df.withColumnRenamed("col_dictionary", "col_map").show()
 
 complex_data_df.select(complex_data_df.col_string.alias("Name")).show()
 
+import pandas
+
+df_pandas = complex_data_df.toPandas()
+print(df_pandas)
+
+df_spark = sqlContext.createDataFrame(df_pandas)
+df_spark.show()
+
+
 
