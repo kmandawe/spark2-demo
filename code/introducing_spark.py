@@ -104,3 +104,36 @@ print(students)
 print(students.collect())
 students_df = sqlContext.createDataFrame(students)
 students_df.show()
+
+print(complex_data_df.first())
+print(complex_data_df.take(2))
+
+cell_string = complex_data_df.collect()[0][2]
+print(cell_string)
+
+cell_list = complex_data_df.collect()[0][4]
+print(cell_list)
+
+cell_list.append(100)
+print(cell_list)
+
+complex_data_df.show()
+
+string_dict_rdd = complex_data_df.rdd.map(lambda x: (x.col_string, x.col_dictionary)).collect()
+print(string_dict_rdd)
+
+complex_data_df.select('col_string', 'col_list', 'col_date_time').show()
+
+with_boo = complex_data_df.rdd.map(lambda x: (x.col_string + " Boo")).collect()
+print(with_boo)
+
+complex_data_df.select('col_integer', 'col_float') \
+    .withColumn("col_sum", complex_data_df.col_integer + complex_data_df.col_float).show()
+
+complex_data_df.select('col_boolean').withColumn("col_opposite", complex_data_df.col_boolean == False).show()
+
+complex_data_df.withColumnRenamed("col_dictionary", "col_map").show()
+
+complex_data_df.select(complex_data_df.col_string.alias("Name")).show()
+
+
