@@ -6,3 +6,7 @@
 
 # Datasets
 datasets
+
+# PySpark Generated
+/code/metastore_db/
+/code/derby.log
